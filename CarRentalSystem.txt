@@ -1,0 +1,394 @@
+Imports System.Data
+Imports System.Data.SqlClient
+Public Class Booking
+    Dim con As New SqlConnection("Data Source=TMINDZ-17\SQLEXPRESS;Initial Catalog=vehicletracking;User ID=sa; pwd=sql;")
+    Dim cmd, cm As New SqlCommand
+    Dim str, s As String
+    Dim adp, a As New SqlDataAdapter
+    Dim ds, ds1 As New DataSet
+    Dim i As Integer
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        con.Open()
+        str = "insert into booking values( '" & TextBox1.Text & "','" & TextBox2.Text & "','" & TextBox3.Text & "','" & TextBox4.Text & "','" & TextBox5.Text & "','" & TextBox6.Text & "','" & TextBox7.Text & "','" & TextBox8.Text & "','" & TextBox9.Text & "')"
+        cmd = New SqlCommand(str, con)
+        cmd.ExecuteNonQuery()
+        MsgBox("successfully booked")
+        TextBox1.Text = ""
+        TextBox2.Text = ""
+        TextBox3.Text = ""
+        TextBox4.Text = ""
+        TextBox5.Text = ""
+        TextBox6.Text = ""
+        TextBox7.Text = ""
+        TextBox8.Text = ""
+        TextBox9.Text = ""
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        main.Show()
+    End Sub
+
+    Private Sub Booking_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Try
+            Dim p As String
+            str = "select bkid from booking"
+            cmd = New SqlCommand(str, con)
+            adp = New SqlDataAdapter(cmd)
+            ds = New DataSet
+            adp.Fill(ds, "booking")
+            i = ds.Tables("booking").Rows.Count
+            p = ds.Tables("booking").Rows(i - 1)(0)
+            p = Mid(p, 4)
+            p = Val(p) + 1
+            If Len(p) = 1 Then
+                p = "000" + p
+            ElseIf Len(p) = 2 Then
+                p = "00" + p
+            ElseIf Len(p) = 3 Then
+                p = "0" + p
+            End If
+            TextBox1.Text = "tbk" + p
+
+        Catch ex As Exception
+            TextBox1.Text = "tbk0001"
+        End Try
+   
+    End Sub
+
+    Private Sub TextBox2_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox2.TextChanged
+        Try
+            s = "select cname,lmark,addr from customer where cnum='" + TextBox2.Text + "'"
+            cm = New SqlCommand(s, con)
+            a = New SqlDataAdapter(cm)
+            ds1 = New DataSet
+            a.Fill(ds1, "customer")
+            TextBox3.Text = ds1.Tables("customer").Rows(0)(0)
+            TextBox4.Text = ds1.Tables("customer").Rows(0)(1)
+            TextBox5.Text = ds1.Tables("customer").Rows(0)(2)
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub TextBox6_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox6.TextChanged
+        
+    End Sub
+
+    Private Sub TextBox7_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox7.TextChanged
+        Try
+            s = "select kilo,amt from tracking where destination='" + TextBox7.Text + "'"
+            cm = New SqlCommand(s, con)
+            a = New SqlDataAdapter(cm)
+            ds1 = New DataSet
+            a.Fill(ds1, "tracking")
+            TextBox8.Text = ds1.Tables("tracking").Rows(0)(0)
+            TextBox9.Text = ds1.Tables("tracking").Rows(0)(1)
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+End Class
+
+Imports System.Data
+Imports System.Data.SqlClient
+Public Class Customer
+    Dim con As New SqlConnection("Data Source=TMINDZ-17\SQLEXPRESS;Initial Catalog=vehicletracking;User ID=sa; pwd=sql;")
+    Dim cmd As New SqlCommand
+    Dim str As String
+    Dim adp As New SqlDataAdapter
+    Dim ds As New DataSet
+    Dim i As Integer
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        con.Open()
+        str = "insert into customer values( '" & TextBox1.Text & "','" & TextBox2.Text & "','" & ComboBox1.Text & "','" & TextBox3.Text & "','" & TextBox4.Text & "','" & TextBox5.Text & "')"
+        cmd = New SqlCommand(str, con)
+        cmd.ExecuteNonQuery()
+        MsgBox("successfully saved")
+        TextBox1.Text = ""
+        TextBox2.Text = ""
+        TextBox3.Text = ""
+        TextBox4.Text = ""
+        TextBox5.Text = ""
+        ComboBox1.Text = "--select--"
+    End Sub
+
+    Private Sub Customer_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Try
+            Dim p As String
+            str = "select cusid from customer"
+            cmd = New SqlCommand(str, con)
+            adp = New SqlDataAdapter(cmd)
+            ds = New DataSet
+            adp.Fill(ds, "customer")
+            i = ds.Tables("customer").Rows.Count
+            p = ds.Tables("customer").Rows(i - 1)(0)
+            p = Mid(p, 4)
+            p = Val(p) + 1
+            If Len(p) = 1 Then
+                p = "000" + p
+            ElseIf Len(p) = 2 Then
+                p = "00" + p
+            ElseIf Len(p) = 3 Then
+                p = "0" + p
+            End If
+            TextBox1.Text = "cus" + p
+
+        Catch ex As Exception
+            TextBox1.Text = "cus0001"
+        End Try
+    End Sub
+End Class
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.IO
+Public Class Diver
+    Dim con As New SqlConnection("Data Source=TMINDZ-17\SQLEXPRESS;Initial Catalog=vehicletracking;User ID=sa; pwd=sql;")
+    Dim cmd As New SqlCommand
+    Dim str As String
+    Dim adp As New SqlDataAdapter
+    Dim ds As New DataSet
+    Dim i As Integer
+    Private Sub DrawToScale(ByVal img As Image)
+        PictureBox1.Image = New Bitmap(img)
+    End Sub
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        Dim fs As FileStream = New FileStream(OpenFileDialog1.FileName, FileMode.Open, FileAccess.Read)
+
+        'Read the output in binary reader
+        Dim r As BinaryReader = New BinaryReader(fs)
+        'Declare a byte array to save the content of the file to be saved
+        Dim FileByteArray(fs.Length - 1) As Byte
+        r.Read(FileByteArray, 0, CInt(fs.Length))
+
+        Dim sql As String = "INSERT INTO driver(dvrid,dvrname,gender,dob,cnum,addr,licno,expr,doj,photo) VALUES (@dvrid,@dvrname,@gender,@dob,@cnum,@addr,@licno,@expr,@doj,@photo)"
+        'Declare a sqlCommand Object
+        Dim cmd As New SqlCommand(sql, con)
+        'Add Parameter
+
+        cmd.Parameters.Add("@dvrid", System.Data.SqlDbType.VarChar, 50).Value = TextBox1.Text
+        cmd.Parameters.Add("@dvrname", System.Data.SqlDbType.VarChar, 500).Value = TextBox2.Text
+        cmd.Parameters.Add("@gender", System.Data.SqlDbType.VarChar, 50).Value = ComboBox1.Text
+        cmd.Parameters.Add("@dob", System.Data.SqlDbType.VarChar, 50).Value = TextBox3.Text
+        cmd.Parameters.Add("@cnum", System.Data.SqlDbType.VarChar, 50).Value = TextBox4.Text
+        cmd.Parameters.Add("@addr", System.Data.SqlDbType.VarChar, 50).Value = TextBox5.Text
+        cmd.Parameters.Add("@licno", System.Data.SqlDbType.VarChar, 50).Value = TextBox6.Text
+        cmd.Parameters.Add("@expr", System.Data.SqlDbType.VarChar, 50).Value = TextBox7.Text
+        cmd.Parameters.Add("@doj", System.Data.SqlDbType.VarChar, 50).Value = TextBox8.Text
+        cmd.Parameters.Add("@photo", System.Data.SqlDbType.Image).Value = FileByteArray
+        con.Open()
+        cmd.ExecuteNonQuery()
+        MsgBox("Succesfully Saved", MessageBoxIcon.Information)
+        con.Close()
+
+        TextBox1.Text = ""
+        TextBox2.Text = ""
+        TextBox3.Text = ""
+        TextBox4.Text = ""
+        TextBox5.Text = ""
+        ComboBox1.Text = "--select--"
+        TextBox7.Text = ""
+        TextBox8.Text = ""
+        PictureBox1.Image = Nothing
+    End Sub
+
+    Private Sub Diver_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Try
+            Dim p As String
+            str = "select dvrid from driver"
+            cmd = New SqlCommand(Str, con)
+            adp = New SqlDataAdapter(cmd)
+            ds = New DataSet
+            adp.Fill(ds, "driver")
+            i = ds.Tables("driver").Rows.Count
+            p = ds.Tables("driver").Rows(i - 1)(0)
+            p = Mid(p, 4)
+            p = Val(p) + 1
+            If Len(p) = 1 Then
+                p = "000" + p
+            ElseIf Len(p) = 2 Then
+                p = "00" + p
+            ElseIf Len(p) = 3 Then
+                p = "0" + p
+            End If
+            TextBox1.Text = "dvr" + p
+
+        Catch ex As Exception
+            TextBox1.Text = "dvr0001"
+        End Try
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        On Error GoTo fix
+        'Display Picture File
+        OpenFileDialog1.ShowDialog()
+        PictureBox1.Image = Image.FromFile(OpenFileDialog1.FileName)
+fix:
+        Exit Sub
+    End Sub
+
+    Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
+        main.Show()
+    End Sub
+End Class
+Imports System.Data
+Imports System.Data.SqlClient
+Public Class Vehicle
+    Dim con As New SqlConnection("Data Source=TMINDZ-17\SQLEXPRESS;Initial Catalog=vehicletracking;User ID=sa; pwd=sql;")
+    Dim cmd, cm As New SqlCommand
+    Dim str, s As String
+    Dim adp, a As New SqlDataAdapter
+    Dim ds, ds1 As New DataSet
+    Dim i As Integer
+    Private Sub Vehicle_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        con.Open()
+        Try
+            str = "select dvrid from driver"
+            cmd = New SqlCommand(str, con)
+            adp = New SqlDataAdapter(cmd)
+            ds = New DataSet
+            adp.Fill(ds, "driver")
+            i = ds.Tables("driver").Rows.Count
+            Dim j As Integer
+            For j = 0 To i - 1
+                ComboBox2.Items.Add(ds.Tables("driver").Rows(j)(0))
+            Next
+        Catch ex As Exception
+
+        End Try
+        con.Close()
+
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+
+        str = "insert into vehicle values( '" & TextBox1.Text & "','" & TextBox2.Text & "','" & TextBox3.Text & "','" & ComboBox1.Text & "','" & TextBox4.Text & "','" & ComboBox2.Text & "','" & TextBox5.Text & "','" & TextBox6.Text & "')"
+        con.Open()
+        cmd = New SqlCommand(str, con)
+        cmd.ExecuteNonQuery()
+        MsgBox("successfully saved")
+        TextBox1.Text = ""
+        TextBox2.Text = ""
+        TextBox3.Text = ""
+        TextBox4.Text = ""
+        TextBox5.Text = ""
+        TextBox6.Text = ""
+        ComboBox1.Text = "--select--"
+        ComboBox2.Text = "--select--"
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        Me.Hide()
+        main.Show()
+    End Sub
+
+    
+    Private Sub ComboBox1_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBox1.SelectedIndexChanged
+        If ComboBox1.Text = "Omni" Then
+            TextBox4.Text = "7"
+        ElseIf ComboBox1.Text = "Indica" Then
+            TextBox4.Text = "6"
+        ElseIf ComboBox1.Text = "Eecho" Then
+            TextBox4.Text = "5"
+        ElseIf ComboBox1.Text = "Etios" Then
+            TextBox4.Text = "8"
+        ElseIf ComboBox1.Text = "Xylo" Then
+            TextBox4.Text = "9"
+        End If
+    End Sub
+
+    Private Sub ComboBox2_SelectedIndexChanged_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBox2.SelectedIndexChanged
+        Try
+            s = "select dvrname,cnum from driver where dvrid='" + ComboBox2.Text + "'"
+            cm = New SqlCommand(s, con)
+            a = New SqlDataAdapter(cm)
+            ds1 = New DataSet
+            a.Fill(ds1, "driver")
+            TextBox5.Text = ds1.Tables("driver").Rows(0)(0)
+            TextBox6.Text = ds1.Tables("driver").Rows(0)(1)
+            ' TextBox3.Text = ds1.Tables("driver").Rows(0)(2)
+
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+End Class
+
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.IO
+Public Class Diver
+    Dim con As New SqlConnection("Data Source=TMINDZ-17\SQLEXPRESS;Initial Catalog=vehicletracking;User ID=sa; pwd=sql;")
+    Dim cmd As New SqlCommand
+    Dim str As String
+    Dim adp As New SqlDataAdapter
+    Dim ds As New DataSet
+    Dim i As Integer
+    Private Sub DrawToScale(ByVal img As Image)
+        PictureBox1.Image = New Bitmap(img)
+    End Sub
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        Dim fs As FileStream = New FileStream(OpenFileDialog1.FileName, FileMode.Open, FileAccess.Read)
+
+        'Read the output in binary reader
+        Dim r As BinaryReader = New BinaryReader(fs)
+        'Declare a byte array to save the content of the file to be saved
+        Dim FileByteArray(fs.Length - 1) As Byte
+        r.Read(FileByteArray, 0, CInt(fs.Length))
+
+        Dim sql As String = "INSERT INTO driver(dvrid,dvrname,gender,dob,cnum,addr,licno,expr,doj,photo) VALUES (@dvrid,@dvrname,@gender,@dob,@cnum,@addr,@licno,@expr,@doj,@photo)"
+        'Declare a sqlCommand Object
+        Dim cmd As New SqlCommand(sql, con)
+        'Add Parameter
+
+        cmd.Parameters.Add("@dvrid", System.Data.SqlDbType.VarChar, 50).Value = TextBox1.Text
+        cmd.Parameters.Add("@dvrname", System.Data.SqlDbType.VarChar, 500).Value = TextBox2.Text
+        cmd.Parameters.Add("@gender", System.Data.SqlDbType.VarChar, 50).Value = ComboBox1.Text
+        cmd.Parameters.Add("@dob", System.Data.SqlDbType.VarChar, 50).Value = TextBox3.Text
+        cmd.Parameters.Add("@cnum", System.Data.SqlDbType.VarChar, 50).Value = TextBox4.Text
+        cmd.Parameters.Add("@addr", System.Data.SqlDbType.VarChar, 50).Value = TextBox5.Text
+        cmd.Parameters.Add("@licno", System.Data.SqlDbType.VarChar, 50).Value = TextBox6.Text
+        cmd.Parameters.Add("@expr", System.Data.SqlDbType.VarChar, 50).Value = TextBox7.Text
+        cmd.Parameters.Add("@doj", System.Data.SqlDbType.VarChar, 50).Value = TextBox8.Text
+        cmd.Parameters.Add("@photo", System.Data.SqlDbType.Image).Value = FileByteArray
+        con.Open()
+        cmd.ExecuteNonQuery()
+        MsgBox("Succesfully Saved", MessageBoxIcon.Information)
+        con.Close()
+
+        TextBox1.Text = ""
+        TextBox2.Text = ""
+        TextBox3.Text = ""
+        TextBox4.Text = ""
+        TextBox5.Text = ""
+ ComboBox1.Text = "--select--"
+        TextBox7.Text = ""
+        TextBox8.Text = ""
+        PictureBox1.Image = Nothing
+    End Sub
+
+    Private Sub Diver_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Try
+            Dim p As String
+            str = "select dvrid from driver"
+            cmd = New SqlCommand(Str, con)
+            adp = New SqlDataAdapter(cmd)
+            ds = New DataSet
+            adp.Fill(ds, "driver")
+            i = ds.Tables("driver").Rows.Count
+            p = ds.Tables("driver").Rows(i - 1)(0)
+            p = Mid(p, 4)
+            p = Val(p) + 1
+            If Len(p) = 1 Then
+                p = "000" + p
+            ElseIf Len(p) = 2 Then
+                p = "00" + p
+            ElseIf Len(p) = 3 Then
+                p = "0" + p
+            End If
+            TextBox1.Text = "dvr" + p
+ Catch ex As Exception
+            TextBox1.Text = "dvr0001"
+        End Sub
